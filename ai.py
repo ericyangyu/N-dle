@@ -46,7 +46,7 @@ class AI:
                 result = input(f'{l}: ')
                 if result == '0':
                     for j in range(len(self.domains)):
-                        if l in self.domains[j]:
+                        if l in self.domains[j] and len(self.domains[j]) > 1:
                             self.domains[j].remove(l)
                 elif result == '1':
                     self.possible_letters.append(l)
