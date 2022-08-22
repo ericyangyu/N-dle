@@ -41,22 +41,34 @@ class AI:
     def arc_consistency(self, word):
         print(f'Performing arc consistency check on {word}...')
         print(f'Specify 0 for completely nonexistent letter at the specified index, 1 for existent letter but incorrect index, and 2 for correct letter at correct index.')
-        for i, l in enumerate(word):
+        results = []
+
+        # Collect results
+        for l in word:
             while True:
                 result = input(f'{l}: ')
-                if result == '0':
-                    for j in range(len(self.domains)):
-                        if l in self.domains[j] and len(self.domains[j]) > 1:
-                            self.domains[j].remove(l)
-                elif result == '1':
-                    self.possible_letters.append(l)
-                    self.domains[i].remove(l)
-                elif result == '2':
-                    self.domains[i] = [l]
-                else:
+                if result not in ['0', '1', '2']:
                     print('Incorrect option. Try again.')
                     continue
+                results.append(result)
                 break
+
+        self.possible_letters += [word[i] for i in range(len(word)) if results[i] == '1']
+
+        for i in range(len(word)):
+            if results[i] == '0':
+                if word[i] in self.possible_letters:
+                    if word[i] in self.domains[i]:
+                        self.domains[i].remove(word[i])
+                else:
+                    for j in range(len(self.domains)):
+                        if word[i] in self.domains[j] and len(self.domains[j]) > 1:
+                            self.domains[j].remove(word[i])
+            if results[i] == '1':
+                if word[i] in self.domains[i]:
+                    self.domains[i].remove(word[i])
+            if results[i] == '2':
+                self.domains[i] = [word[i]]
 
 
     def reset(self):
